@@ -1,0 +1,15 @@
+__pycache__
+docs
+documentation
+images_roi
+images_templates
+fragments_found
+test_frag
+OCR_result
+test-output
+out
+test.py
+original.png
+frag.png
+example.png
+.idea
