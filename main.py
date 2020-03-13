@@ -30,7 +30,7 @@ __status__ = "Prototype"
 
 # CODE
 
-image_name = "capture.png"
+image_name = "capture3.png"
 path_of_images = r"images"
 path_of_ROI_images = r"images_roi"
 path_of_fragments = r"fragments_found"
@@ -51,8 +51,12 @@ if saved:
 # segmentation of the main image in different fragments
 list_of_fragments = os.listdir(path_of_fragments)
 
+image_segmentation(image_roi)
+# image_roi = cv2.imread(path_of_fragments+'/0_110_258_55.png')
+
 block_type = ["motion", "looks", "sound", "events", "control", "sensing", "operators", "variables"]
 block_name = ["When", "Repeat", "Move", "Wait", "If", "Turn"]
+
 blocktype = block_type[1]
 nodes_list = list()
 x_coords_list = list()
@@ -65,7 +69,13 @@ root = BlockNode((0, 0, 0, 0), "root", "root", None)
 # graph = Graph(root)
 for img in list_of_fragments:
     images_fragments_list.append(img)
+    image_roi = cv2.imread(path_of_fragments+'/'+img)
+    ocr_process(image_roi, east)
+    cv2.imshow('roi', image_roi)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 images_fragments_list.sort()
+
 for img, b_type, b_name in zip(images_fragments_list, block_type, block_name):
     img_name = img.split('_')
     x, y, w, h = int(img_name[0]), int(img_name[1]), int(img_name[2]), int(img_name[3].split('.')[0])
@@ -140,5 +150,5 @@ graph.add_edge(edge7)
 
 # graph.display_graph()
 # graph.build_python_file()
-graph.build_graphviz_file()
+# graph.build_graphviz_file()
 # graph.show_dfs()

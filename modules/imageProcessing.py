@@ -19,21 +19,22 @@ def blurFilter(image):
 def GaussianBlurFilter(image):
     kernelSize = 3
     return cv2.GaussianBlur(image,(kernelSize,kernelSize),3)
-def thresholdFilter(image):
-    return cv2.threshold(image,127,255,cv2.THRESH_TOZERO |  cv2.THRESH_OTSU)[1]
+def thresholding(image,thresh = 128, maxval = 255,thresh_type = 0 ):
+    return cv2.threshold(image,thresh,maxval,thresh_type)[1]
 def bilateralFilter(image):
     diameter = 11
     sigmaColor = 17
     sigmaSpace = 17
     return cv2.bilateralFilter(image, diameter, sigmaColor, sigmaSpace)
 def filter2DFilter(image):
-    return cv2.filter2D(image, -1, np.array([[1 for i in range(3)] for j in range(3)], dtype = np.float) / 9)
+    kernel1 = np.ones((5, 5), np.float32) / 25
+    kernel2 = np.array([[1 for i in range(3)] for j in range(3)], dtype = np.float) / 9
+    return cv2.filter2D(image, -1, kernel1)
 
 filterDictionary = {
         "median" : medianBlurFilter,
         "blur" : blurFilter,
         "morpho" : morpholyTransform,
-        "thresh" : thresholdFilter,
         "bilateral" : bilateralFilter,
         "gauss" : GaussianBlurFilter,
         "2d" : filter2DFilter             
@@ -67,6 +68,13 @@ def get_all_contours(image, mode = cv2.RETR_EXTERNAL,method=cv2.CHAIN_APPROX_SIM
     return cv2.findContours(image,mode,method)
 def canny_edges(image,threshold1 = 60,threshold2 = 120):
     return cv2.Canny(image,threshold1,threshold2)
+
+def sobel_edges(image_gray):
+    gradX = cv2.Sobel(image_gray, ddepth=cv2.CV_32F, dx=1, dy=0)
+    gradY = cv2.Sobel(image_gray, ddepth=cv2.CV_32F, dx=0, dy=1)
+    gradient = cv2.subtract(gradX, gradY)
+    return cv2.convertScaleAbs(gradient)
+
 def remove_image_background(image):
     gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     edged = canny_edges(gray_img)
@@ -188,43 +196,68 @@ def get_fragments(image):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
     closed = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, kernel)
     contours, hierarchy = cv2.findContours(closed,cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
-    	# finding_contours
-    # cv2.imshow('original image',orig_image)
-    # cv2.drawContours(image,contours,-1,(0,0,255),2)
-    # for c in contours:
-    #     x,y,w,h=cv2.boundingRect(c)
     #     cv2.rectangle(orig_image,(x,y),(x+w,y+h),(0,0,255),2)
-    #     accuracy=0.03*cv2.arcLength(c,True)
-    #     approx=cv2.approxPolyDP(c,accuracy,True)
-    #     cv2.drawContours(image,[approx],0,(0,255,0),2)
-    # for c in contours:
-    #     peri = cv2.arcLength(c, True)
-    #     approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-    #     cv2.drawContours(image, [approx], -1, (0, 255, 0), 2)
-    idx = 0
     for c in contours:
         image_heigh, image_width = image.shape[:2]
         x,y,w,h = cv2.boundingRect(c)
         if h>60 and w>60:
-            idx+=1
             if x == 0 and y == 0 and y + h == image_heigh:
-                continue
+                pass
             else:
                 new_img=image[y:y+h,x:x+w]
-                
-            # cv2.imshow('tralala',image[(image.shape[0]-new_img.shape[0])-:image.shape[1] - new_img.shape[1]])
             coordinates = r''+str(x)+'_'+str(y)+'_'+str(w)+'_'+str(h)+''
             cv2.imwrite("fragments_found/" + coordinates + '.png', new_img)
-            cv2.circle(original,(x,y),0,(0,0,255),3)
-            font = cv2.FONT_HERSHEY_PLAIN 
-            orgine1 = (x,y) 
-            orgine2 = (x,y+h) 
-            textx = str((x,y))
-            texty = str((x,y+h))
-            fontScale = 1
-            color = (0, 0, 0)
-            thickness = 1
-            original = cv2.putText(original, textx, orgine1, font, fontScale,color, thickness, cv2.LINE_AA, False) 
-            original = cv2.putText(original, texty, orgine2, font, fontScale,color, thickness,cv2.LINE_AA, False)
-            cv2.circle(original,(x,y+h),2,(255,0,0),3)
-            cv2.imwrite("original.png", original)
+            # cv2.circle(original,(x,y),0,(0,0,255),3)
+            # font = cv2.FONT_HERSHEY_PLAIN
+            # orgine1 = (x,y)
+            # orgine2 = (x,y+h)
+            # textx = str((x,y))
+            # texty = str((x,y+h))
+            # fontScale = 1
+            # color = (0, 0, 0)
+            # thickness = 1
+            # original = cv2.putText(original, textx, orgine1, font, fontScale,color, thickness, cv2.LINE_AA, False)
+            # original = cv2.putText(original, texty, orgine2, font, fontScale,color, thickness,cv2.LINE_AA, False)
+            # cv2.circle(original,(x,y+h),2,(255,0,0),3)
+            # cv2.imwrite("original.png", original)
+
+
+def image_segmentation(image):
+    original = image.copy()
+    gray = change_image_color(image, cv2.COLOR_BGR2GRAY)
+    edged = canny_edges(gray, 0, 60)
+    thresh = thresholding(edged, 0, 128, cv2.THRESH_TOZERO + cv2.THRESH_OTSU)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
+    closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+    contours, hierarchy = cv2.findContours(closed.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)[:len(contours) - 1]
+
+    for contour in contours:
+        # accuracy = 0.00015 * cv2.arcLength(contour, True)
+        # approx = cv2.approxPolyDP(contour, accuracy, True)
+        rect = cv2.minAreaRect(contour)
+        approx = np.int0(cv2.boxPoints(rect))
+        if len(approx) == 4:
+            Xs = [i[0] for i in approx]
+            Ys = [i[1] for i in approx]
+            x1 = min(Xs)
+            x2 = max(Xs)
+            y1 = min(Ys)
+            y2 = max(Ys)
+            height = y2 #- y1
+            width = x2 #- x1
+            # x,y,w,h = cv2.boundingRect(c)
+            print(height,width)
+            h,w  = original.shape[:2]
+            print([h,w])
+            ratio = int(((width) / sum(Xs)) * 100)
+            if ratio >= 35:
+                # cv2.drawContours(original, [approx], -1, (255), 2)
+                new_image = None
+                if width and height:
+                    if x1 == 0 and y1 == 0 and y1 + height == h:
+                        continue
+                    new_image = image[y1:y1 + height, x1:x1 + width]
+                coordinates = r'' + str(x1) + '_' + str(y1) + '_' + str(width) + '_' + str(height) + ''
+                if isinstance(coordinates,str) and new_image is not None :
+                    cv2.imwrite("fragments_found/" + coordinates + '.png', new_image)
