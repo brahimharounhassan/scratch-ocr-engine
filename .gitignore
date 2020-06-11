@@ -14,6 +14,8 @@ frag.png
 example.png
 .idea
 ipynb_checkpoints
+requirements.txt
+requirement.txt
 
 ########################################################
 # Data files and directories common in repo root
