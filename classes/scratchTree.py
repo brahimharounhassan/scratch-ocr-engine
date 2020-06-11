@@ -8,7 +8,7 @@ class BlockNode(VerticalBlock,Node):
     def __init__(self, block_coordinates,block_type,block_name,block_h):
         super().__init__(block_coordinates,block_type,block_name,block_h)
         Node.__init__(self,block_name)
-        
+
         
     @abstractmethod
     def get_python_code(self):
