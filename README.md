@@ -75,7 +75,8 @@ Ce projet a été réalisé dans le cadre : d’un stage à l’Unité de Recher
 ## Auteur
 
 - Haroun Hassan BRAHIM - Ingénieur en Intelligence Artificielle | Spécialisé en Machine Learning et Deep Learning
-  [LinkedIn](www.linkedin.com/in/brahimharounhassan/) | [Github](https://github.com/brahimharounhassan) | [ResearchGate](https://www.researchgate.net/profile/Haroun-Hassan-Brahim)
+
+  [LinkedIn](https://www.linkedin.com/in/brahimharounhassan/) | [Github](https://github.com/brahimharounhassan) | [ResearchGate](https://www.researchgate.net/profile/Haroun-Hassan-Brahim)
 
 - Mahamat Issa CHOUEB
 
