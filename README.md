@@ -7,11 +7,18 @@ Scratch OCR Engine
 
 Scratch OCR Engine est un outil développé pour analyser des images contenant des algorithmes visuels Scratch, détecter les blocs logiques, d’extraire le texte associé, puis de générer un graphe représentant l’algorithme, et finalement le convertir en code Python exécutable.
 
-Ce projet a été réalisé dans le cadre :
-
-    D’un stage à l’Unité de Recherche RTIM  (Gabès, Tunisie) et à Intellect Academy
+Ce projet a été réalisé dans le cadre : d’un stage à l’Unité de Recherche RTIM (Gabès, Tunisie) et à Intellect Academy
 
 ## Technologies & Frameworks
+
+| Outil / Langage | Utilisation                                 |
+| :-------------- | :------------------------------------------ |
+| Python 3.8.x    | Langage principal                           |
+| OpenCV          | Traitement d'image et détection de contours |
+| EAST            | Détection de texte dans les blocs           |
+| Tesseract OCR   | Extraction du texte                         |
+| Mask R-CNN      | Segmentation des blocs Scratch              |
+| Graphviz        | Génération du graphe via DFS                |
 
 ## Fonctionnalités Principales
 
@@ -24,14 +31,14 @@ Ce projet a été réalisé dans le cadre :
 ## Structure du Projet
 
 - [x] `scratch-ocr-engine/` :
-      [x] `DL_implementation` :
-      [x] `classes` :
-      [x] `images` :
-      [x] `maskrcnnp` :
-      [x] `modules` :
-      [x] `pythonCode` :
-      [x] `scripts` :
-      [x] `README.md`
+  - [x] `DL_implementation` :
+  - [x] `classes` :
+  - [x] `images` :
+  - [x] `maskrcnnp` :
+  - [x] `modules` :
+  - [x] `pythonCode` :
+  - [x] `scripts` :
+  - [x] `README.md`
 
 ## Installation
 
