@@ -1,3 +1,7 @@
+# Projet de Fin d'Etude (PFE)
+
+![Python 3.8.0](https://img.shields.io/badge/Python-3.8.0-yellow?style=plastic)
+
 ## Nom
 
 Scratch OCR Engine
