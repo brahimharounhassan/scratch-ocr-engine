@@ -64,7 +64,7 @@ Ce projet a été réalisé dans le cadre : d’un stage à l’Unité de Recher
     ```
     python scripts/inputs.py
     ```
-    Le programme traitera l’image dans le répertoire `images/`, détectera les blocs, extraira le texte, générera un graphe et produira un fichier Python correspondant.
+  Le programme traitera l’image dans le répertoire `images/`, détectera les blocs, extraira le texte, générera un graphe et produira un fichier Python correspondant.
 
 ## Références
 
